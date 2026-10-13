@@ -1,7 +1,15 @@
-Hash table:
+N: # of entities that exist at a given time
+K: # of component types
+M: # (entity, component) pairs that exist at a given time
 
-Map:
+3a. Hash table:
+only stores pairs that exist in O(M), but each entry has a lot of extra overhead. Lookup is O(1) amortized, but it is slow in practice because the data is spread in memory meaning more potential cache misses. adding and removing a pair is also O(1) amortized though removing an entity means checking all K tables.
 
-Sparse mapping 1:
+3b. Map:
+Only stores pairs that exist in O(M), but each tree node has a bit of overhead. Lookup is O(log M), making it slowest access due to pointer following. Adding and removing a pair is O(log M), and removing an entity means checking all K maps.
 
-Sparse mapping 2:
+3c. Sparse mapping 1:
+Always uses O(N*K) memory, regardless of how few pairs there are, so space can go wasted. Lookup is O(1), and entity components sit together in memory, which is fast for checking one entity but slow for scanning one component type across all entities; adding or removing a component is O(1), while adding an entity costs O(K) and removing one either leaves an empty row or changes another entity's ID.
+
+3d. Sparse mapping 2:
+Always uses O(N*K) memory, regardless of how few pairs there are, so space can go wasted. Lookup is O(1), and entries for one component type sit together in memory, which is fast for scanning one component type across all entities but slow for checking one entity; adding or removing a component is O(1), while adding an entity costs O(K) and removing one either leaves an empty slot or changes another entity's ID.
